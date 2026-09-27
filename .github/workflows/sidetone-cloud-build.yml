@@ -1,0 +1,51 @@
+name: Sidetone Windows build
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sidetone-windows-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Load verified Sidetone source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git bundle verify ./sidetone-candidate.bundle
+          git fetch ./sidetone-candidate.bundle HEAD
+          test "$(git rev-parse FETCH_HEAD)" = "50cbae2db1fd5c5ea53e596fd6b9c5d31e03e2e7"
+          git checkout --detach FETCH_HEAD
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install installer compiler
+        shell: pwsh
+        run: choco install innosetup --no-progress -y
+      - name: Build plugin, RadioHost, tests and installer
+        shell: pwsh
+        run: ./tools/build-sidetone.ps1 -UseStubReference -BuildInstaller
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sidetone-Windows-test-results
+          path: artifacts/test-results
+          if-no-files-found: ignore
+      - name: Preserve candidate installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sidetone-Windows-candidate
+          path: |
+            artifacts/Sidetone-Setup-*.exe
+            artifacts/BUILD-REFERENCE.txt
+            artifacts/build-manifest.json
+            artifacts/SHA256.json
+          if-no-files-found: error
