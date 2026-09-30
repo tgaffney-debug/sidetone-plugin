@@ -20,7 +20,9 @@ jobs:
           set -euo pipefail
           git bundle verify ./sidetone-candidate.bundle
           git fetch ./sidetone-candidate.bundle HEAD
-          test "$(git rev-parse FETCH_HEAD)" = "50cbae2db1fd5c5ea53e596fd6b9c5d31e03e2e7"
+          expected_source="$(cat sidetone-source.txt)"
+          [[ "$expected_source" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse FETCH_HEAD)" = "$expected_source"
           git checkout --detach FETCH_HEAD
           test -z "$(git status --porcelain)"
       - uses: actions/setup-dotnet@v4
