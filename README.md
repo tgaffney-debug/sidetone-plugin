@@ -1,15 +1,9 @@
-# Sidetone development build
+# Sidetone improvement candidate
 
-Native iPhone radio panel and hold-to-talk control for vPilot on Windows. This is a development candidate, not yet accepted on physical devices.
+Windows companion for the native Sidetone iPhone radio panel. Version 0.6.0-sidetone.2.
 
-This branch is a **cloud-build launcher**. The reviewed Sidetone implementation is stored in `sidetone-candidate.bundle`, a standard Git bundle containing source commit `50cbae2db1fd5c5ea53e596fd6b9c5d31e03e2e7` and its delta from upstream `76cb59d7d84eb60fd13f6dadf090103ae896d254`. The surrounding source tree is the upstream baseline, not the Sidetone application.
+This branch is a cloud-build launcher. The application source is stored in the standard Git bundle `sidetone-candidate.bundle`, source commit `90606482d745db4c29fbca0c1d2f6570d08002d7`. The surrounding tree is the upstream baseline. The manual Sidetone workflow verifies the bundle and checks out the exact source commit declared in `sidetone-source.txt` before building.
 
-The manual **Sidetone** workflow verifies the bundle and checks out that exact candidate before compiling or testing. It has read-only repository permission and does not publish a release. Build manifests identify the candidate source commit, which differs from the workflow launcher commit.
+Bundle SHA-256: `c6ed877870ea7f10c4e125029ebfad9a9db44ffa2ac8b731f60c1af185cdd07c`.
 
-To inspect the candidate locally, fetch the bundle into this clone and check out FETCH_HEAD. The candidate includes setup instructions, protocol documentation, safety tests and build scripts.
-
-Bundle SHA-256: `4b0ec70772c21eb372197c287af0b9c4a3147a1232766f8dbbbbf3fa22ee04aa`
-
-GitHub browser is signed in as tgaffney-debug; the connector is linked to another account. This source-bundle launcher enables platform builds without creating credentials or changing account access.
-
-Microphone and headset remain on the Windows PC. iPhone installation still needs Apple signing. No installer or IPA should be treated as flight-ready until device acceptance.
+The updated source includes first-run Windows connection help, direct Ally address display, honest readiness, radio-command expiry, readback recovery fixes and expanded failure-path tests. Microphone/headset stay on the Ally. Native build results and physical-device acceptance are distinct checks. No live-flight reliability claim is implied by this source upload.
